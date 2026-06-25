@@ -106,6 +106,9 @@ with col2:
                                 "--out",
                                 str(optimized_path),
                                 str(source_path),
+                                "--",
+                                *clang_args,
+                                
                             ],
                             cwd=temp_dir_path,
                             input=None,
