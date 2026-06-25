@@ -7,12 +7,13 @@ from pathlib import Path
 
 st.set_page_config(layout="wide", page_title="C to CFG Optimizer")
 
-st.title(" C Code Static Analyzer & Optimizer")
+st.title("C Code Static Analyzer & Optimizer")
 
 PROJECT_DIR = Path(__file__).resolve().parent
 ANALYZER_CANDIDATES = [
     PROJECT_DIR / "build" / "analyzer",
     PROJECT_DIR / "analyzer",
+    PROJECT_DIR / "build" / "Release" / "analyzer.exe",
     PROJECT_DIR / "build" / "analyzer.exe",
     PROJECT_DIR / "analyzer.exe",
 ]
@@ -44,12 +45,6 @@ def find_analyzer():
     return None, skipped
 
 def extract_dot_blocks(stdout_output: str) -> list[str]:
-    """
-    CFGBuilder.cpp prints exactly one DOT graph between:
-    --- COPY BELOW THIS LINE TO A .DOT FILE ---
-    ... DOT ...
-    --- END DOT OUTPUT ---
-    """
     pattern = (
         r'--- COPY BELOW THIS LINE TO A \.DOT FILE ---\r?\n'
         r'(.*?)\r?\n--- END DOT OUTPUT ---'
@@ -92,22 +87,17 @@ with col2:
                 st.stop()
 
             try:
-                # Integration requirement:
-                # - execute analyzer.exe via subprocess.run
-                # - pass source via a temporary file (robust cross-platform)
-                # - pass --out to control where rewritten source is written
                 with tempfile.TemporaryDirectory() as temp_dir:
                     temp_dir_path = Path(temp_dir)
                     source_path = temp_dir_path / "temp.c"
                     optimized_path = temp_dir_path / "optimized.c"
                     source_path.write_text(c_code, encoding="utf-8")
 
-                    clang_args = [
-                        "-xc",
-                        "-std=c11",
-                        "-I/usr/include",
-                        "-I/usr/local/include",
-                    ]
+                    # FIXED: Only use paths if not on Windows
+                    if os.name == "nt":
+                        clang_args = ["-xc", "-std=c11"]
+                    else:
+                        clang_args = ["-xc", "-std=c11", "-I/usr/include", "-I/usr/local/include"]
 
                     with st.spinner("Running Analysis and Code Rewriting..."):
                         result = subprocess.run(
@@ -115,8 +105,6 @@ with col2:
                                 str(analyzer_path),
                                 "--out",
                                 str(optimized_path),
-                                "--",
-                                *clang_args,
                                 str(source_path),
                             ],
                             cwd=temp_dir_path,
@@ -161,4 +149,3 @@ with col2:
 
             except Exception as e:
                 st.error(f"An error occurred: {e}")
-
