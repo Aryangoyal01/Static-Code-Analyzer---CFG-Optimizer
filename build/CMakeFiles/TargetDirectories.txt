@@ -1,0 +1,8 @@
+C:/Users/aryan/OneDrive/Desktop/project/build/CMakeFiles/intrinsics_gen.dir
+C:/Users/aryan/OneDrive/Desktop/project/build/CMakeFiles/omp_gen.dir
+C:/Users/aryan/OneDrive/Desktop/project/build/CMakeFiles/acc_gen.dir
+C:/Users/aryan/OneDrive/Desktop/project/build/CMakeFiles/RISCVTargetParserTableGen.dir
+C:/Users/aryan/OneDrive/Desktop/project/build/CMakeFiles/clang-tablegen-targets.dir
+C:/Users/aryan/OneDrive/Desktop/project/build/CMakeFiles/analyzer.dir
+C:/Users/aryan/OneDrive/Desktop/project/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/aryan/OneDrive/Desktop/project/build/CMakeFiles/ZERO_CHECK.dir

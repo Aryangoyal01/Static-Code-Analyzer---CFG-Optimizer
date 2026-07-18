@@ -4,71 +4,48 @@ A simple yet powerful Clang-based static analyzer for C code with Control Flow G
 
 ## Prerequisites
 
-- **Windows**
-  - CMake >= 3.10
-  - LLVM/Clang toolchain (Visual Studio Build Tools + LLVM, or MSYS2 UCRT packages)
-  - Python 3.8+
-- **Linux/macOS**
-  - CMake >= 3.10
-  - LLVM/Clang development packages
-  - Python 3.8+
+To build and run this project, you will need:
+- **C++ Compiler**: A compiler like MSVC (Visual Studio) or GCC.
+- **CMake**: To configure the build system.
+- **LLVM / Clang Developer Libraries**: Required for the C++ backend to use the Clang AST and Rewriter APIs.
+- **Python 3**: For running the web interface.
 
-## Quick Start (Windows)
+## 1. Building the C++ Analyzer (Backend)
 
-Use the provided `run.bat` to build everything, install Python dependencies, and start the UI:
+The C++ backend (`CFGBuilder.cpp`) must be compiled into an executable using CMake. Because LLVM/Clang on Windows are typically distributed in "Release" mode, you must build the project in **Release** mode to avoid standard library mismatch errors (`LNK2038`).
 
-```bat
-run.bat
-```
+Open your terminal in the root project directory and run the following commands:
 
-Alternatively, build manually from an **x64 Native Tools Command Prompt** or **MSYS2 UCRT shell**:
-
-```bat
+```powershell
+# Create the build directory and navigate into it
 mkdir build
 cd build
-cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+
+# Configure the project using CMake
+cmake ..
+
+# Compile the backend in Release mode
 cmake --build . --config Release
-cd ..
-python -m pip install -r requirements.txt
-python -m streamlit run webinterface.py
 ```
 
-## Quick Start (Linux/macOS)
+After a successful build, the executable will be generated at:
+`build/Release/analyzer.exe` (on Windows) or `build/analyzer` (on Linux/macOS).
 
-```bash
-# Build slider backend
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build . --config Release
-cd ..
+## 2. Running the Web Interface (Frontend)
 
-# Install Python deps and launch UI
-python3 -m pip install -r requirements.txt
-python3 -m streamlit run webinterface.py
+The frontend is built using Python and Streamlit. It takes your C code, passes it to the `analyzer.exe`, and visualizes the generated DOT graph.
+
+Open your terminal in the root project directory and run:
+
+```powershell
+# Install the required Python library
+pip install streamlit
+
+# Run the web application
+py -m streamlit run webinterface.py
 ```
 
-## Using the UI
-
-1. Open the Streamlit dashboard (usually at `http://localhost:8501`).
-2. Paste C source code into the left panel.
-3. Click **Analyze & Generate CFG**.
-4. The right panel will show:
-   - **Visual CFG** — interactive Graphviz chart with liveness sets and loop-back edges.
-   - **Optimized Code** — the rewritten source after constant folding, propagation, dead-code removal, and unreachable-function pruning.
-   - **Raw Console Output** — expand to view backend stdout/stderr.
-
-## Project Files
-
-| File | Purpose |
-|------|---------|
-| `CFGBuilder.cpp` | Clang Tooling backend. Performs CFG construction, liveness analysis, constant folding/propagation, dead-code elimination, and unreachable-function removal. |
-| `webinterface.py` | Streamlit front-end. Runs the analyzer, renders DOT graphs, and shows optimized code. |
-| `CMakeLists.txt` | Build configuration for the analyzer. |
-| `run.bat` | One-click build + launch script for Windows. |
-| `requirements.txt` | Python dependencies. |
-| `build.bat` | Basic build script (kept from original project). |
-| `README.md` | This documentation. |
-| `.gitignore` | Git ignore rules. |
+This will start a local server and automatically open the application in your default web browser at `http://localhost:8501`.
 
 ## How It Works
 

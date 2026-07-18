@@ -1,19 +1,33 @@
 cmake_minimum_required(VERSION 3.10)
 project(StaticAnalyzer)
 
+# Find LLVM and Clang packages
+find_package(LLVM REQUIRED CONFIG)
+find_package(Clang REQUIRED CONFIG)
+
+# Add LLVM/Clang include directories
+include_directories(${LLVM_INCLUDE_DIRS} ${CLANG_INCLUDE_DIRS})
+add_definitions(${LLVM_DEFINITIONS})
+
+# Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find Clang/LLVM
-find_package(Clang REQUIRED)
-find_package(LLVM REQUIRED)
-
-include_directories(${LLVM_INCLUDE_DIRS} ${CLANG_INCLUDE_DIRS})
-link_directories(${LLVM_LIBRARY_DIRS})
-
-# Place the built executable directly inside the build directory
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-
-# The only executable
+# Create the executable
 add_executable(analyzer CFGBuilder.cpp)
-target_link_libraries(analyzer clangTooling clangBasic clangAST)
+
+# Link all required Clang and LLVM libraries
+target_link_libraries(analyzer PRIVATE
+    clangTooling
+    clangFrontend
+    clangSerialization
+    clangDriver
+    clangParse
+    clangSema
+    clangAnalysis
+    clangEdit
+    clangAST
+    clangLex
+    clangBasic
+    clangRewrite
+)

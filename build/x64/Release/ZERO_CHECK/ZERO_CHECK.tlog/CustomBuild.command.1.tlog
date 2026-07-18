@@ -1,0 +1,10 @@
+^C:\USERS\ARYAN\ONEDRIVE\DESKTOP\PROJECT\BUILD\CMAKEFILES\2D0AD50113A79575C4A4E80779ADBC9A\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/aryan/OneDrive/Desktop/project -BC:/Users/aryan/OneDrive/Desktop/project/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/aryan/OneDrive/Desktop/project/build/StaticAnalyzer.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
