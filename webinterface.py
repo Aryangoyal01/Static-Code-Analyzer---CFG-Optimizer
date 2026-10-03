@@ -45,7 +45,7 @@ with col2:
                 with st.spinner("Running Analysis and Code Rewriting..."):
                     #we Execute the backend here...
                     result = subprocess.run(
-                        ["./build/Release/analyzer.exe", "temp.c", "--"], 
+                        ["./build/analyzer.exe", "temp.c", "--"], 
                         capture_output=True, 
                         text=True
                     )
