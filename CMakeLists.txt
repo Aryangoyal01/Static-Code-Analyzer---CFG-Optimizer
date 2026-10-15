@@ -14,6 +14,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Enable large code model to prevent 32-bit PC-relative offset overflow in big Clang libraries
+add_compile_options(-mcmodel=medium)
+
 # Create the executable
 add_executable(analyzer CFGBuilder.cpp)
 
@@ -33,4 +36,8 @@ target_link_libraries(analyzer PRIVATE
     clangRewrite
 )
 
-target_link_options(analyzer PRIVATE "-Wl,--allow-multiple-definition")
+# Use lld linker (bundled with your msys2 clang) and handle multiple definitions
+target_link_options(analyzer PRIVATE 
+    "-fuse-ld=lld"
+    "-Wl,--allow-multiple-definition"
+)

@@ -5,14 +5,14 @@ A simple yet powerful Clang-based static analyzer for C code with Control Flow G
 ## Prerequisites
 
 To build and run this project, you will need:
-- **C++ Compiler**: A compiler like MSVC (Visual Studio) or GCC.
-- **CMake**: To configure the build system.
+- **C++ Compiler**: Clang / Clang++ (MSYS2 UCRT64), GCC, or MSVC.
+- **CMake & Ninja**: To configure and execute the build system.
 - **LLVM / Clang Developer Libraries**: Required for the C++ backend to use the Clang AST and Rewriter APIs.
 - **Python 3**: For running the web interface.
 
 ## 1. Building the C++ Analyzer (Backend)
 
-The C++ backend (`CFGBuilder.cpp`) must be compiled into an executable using CMake. Because LLVM/Clang on Windows are typically distributed in "Release" mode, you must build the project in **Release** mode to avoid standard library mismatch errors (`LNK2038`).
+The C++ backend (`CFGBuilder.cpp`) is compiled into an executable using CMake and Ninja.
 
 Open your terminal in the root project directory and run the following commands:
 
@@ -21,15 +21,18 @@ Open your terminal in the root project directory and run the following commands:
 mkdir build
 cd build
 
-# Configure the project using CMake
-cmake ..
+# Configure the project using Ninja and Clang (pointing prefix path to your LLVM install)
+cmake -G "Ninja" `
+  -DCMAKE_C_COMPILER="clang" `
+  -DCMAKE_CXX_COMPILER="clang++" `
+  -DCMAKE_PREFIX_PATH="C:/msys64/ucrt64" `
+  ..
 
-# Compile the backend in Release mode
-cmake --build . --config Release
-```
+# Compile the analyzer binary
+ninja
 
-After a successful build, the executable will be generated at:
-`build/Release/analyzer.exe` (on Windows) or `build/analyzer` (on Linux/macOS).
+fter a successful build, the executable will be generated at:
+build/analyzer.exe (on Windows) or build/analyzer (on Linux/macOS).
 
 ## 2. Running the Web Interface (Frontend)
 
